@@ -44,9 +44,22 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <AppLogo size={36} />
-              <span className="font-extrabold text-xl tracking-tight text-white">
+            <div className="flex items-center gap-3">
+              <div className="relative flex items-center justify-center shrink-0">
+                {/* Light backdrop so the navy logo mark doesn't blend into
+                    the dark footer background */}
+                <div
+                  className="absolute inset-0 rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.25)]"
+                  style={{
+                    background: 'linear-gradient(135deg, #EFB000 0%, #FFD040 50%, #D4960A 100%)',
+                  }}
+                  aria-hidden="true"
+                />
+                <div className="relative p-1">
+                  <AppLogo size={80} />
+                </div>
+              </div>
+              <span className="font-extrabold text-2xl tracking-tight text-white">
                 Swift<span className="text-[#EFB000]">Yak</span>
               </span>
             </div>
