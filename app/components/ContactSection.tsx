@@ -13,19 +13,19 @@ const CONTACT_INFO = [
   {
     icon: 'PhoneIcon',
     label: 'Phone',
-    value: '+977 1 4782 0123',
-    href: 'tel:+97714782012',
+    value: '+977 9867887967',
+    href: 'tel:+9779867887967',
   },
   {
     icon: 'EnvelopeIcon',
     label: 'Email',
-    value: 'hello@swiftyak.com.np',
-    href: 'mailto:hello@swiftyak.com.np',
+    value: 'yakswift9@gmail.com',
+    href: 'mailto:yakswift9@gmail.com',
   },
   {
     icon: 'ChatBubbleLeftEllipsisIcon',
     label: 'WhatsApp',
-    value: '+977 98XX XXX XXX',
+    value: '+977 9867887967',
     href: 'https://wa.me/977981234567',
   },
   {
