@@ -1,0 +1,10 @@
+{
+  "name": "swiftyak",
+
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "swiftyak"
+    }
+  ]
+}
