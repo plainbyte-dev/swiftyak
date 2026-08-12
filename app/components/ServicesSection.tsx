@@ -16,84 +16,18 @@ const SERVICES: Service[] = [
   {
     id: 'domestic',
     title: 'Domestic Courier',
-    description: 'Fast and reliable door-to-door delivery across all major cities and remote destinations within Nepal. Same-day and next-day options available.',
+    description: 'Fast and reliable door-to-door delivery across Nepal. Same-day and next-day options available.',
     icon: 'TruckIcon',
     featured: true,
-    colSpan: 'md:col-span-2',
+    colSpan: 'md:col-span-1',
   },
   {
     id: 'international',
     title: 'International Courier',
-    description: 'Send parcels and documents to 50+ countries with full tracking and insurance.',
+    description: 'Send parcels and documents worldwide, with full tracking.',
     icon: 'GlobeAltIcon',
-  },
-  {
-    id: 'air-freight',
-    title: 'Air Freight',
-    description: 'Priority air cargo for time-sensitive shipments worldwide via Kathmandu Airport.',
-    icon: 'PaperAirplaneIcon',
-  },
-  {
-    id: 'sea-freight',
-    title: 'Sea Freight',
-    description: 'Cost-effective ocean freight solutions for large-volume exports and imports.',
-    icon: 'BuildingStorefrontIcon',
-  },
-  {
-    id: 'road-freight',
-    title: 'Road Freight',
-    description: 'Dedicated road transport across Nepal, India, and China border corridors.',
-    icon: 'MapIcon',
-  },
-  {
-    id: 'freight-forwarding',
-    title: 'Freight Forwarding',
-    description: 'End-to-end freight management with documentation, routing, and carrier coordination.',
-    icon: 'ArrowPathIcon',
-  },
-  {
-    id: 'customs',
-    title: 'Customs Clearance',
-    description: 'Expert customs documentation and clearance support for smooth border crossings.',
-    icon: 'DocumentCheckIcon',
-  },
-  {
-    id: 'import',
-    title: 'Import Services',
-    description: 'Streamlined import logistics from sourcing to last-mile delivery in Nepal.',
-    icon: 'ArrowDownTrayIcon',
-  },
-  {
-    id: 'export',
-    title: 'Export Services',
-    description: 'Comprehensive export solutions for Nepali businesses reaching global markets.',
-    icon: 'ArrowUpTrayIcon',
-  },
-  {
-    id: 'business',
-    title: 'Business Logistics',
-    description: 'Dedicated accounts, bulk rates, and supply chain solutions for enterprises.',
-    icon: 'BuildingOfficeIcon',
-  },
-  {
-    id: 'ecommerce',
-    title: 'E-commerce Logistics',
-    description: 'Fulfillment, returns management, and delivery integrations for online stores.',
-    icon: 'ShoppingBagIcon',
-  },
-  {
-    id: 'document',
-    title: 'Document Courier',
-    description: 'Secure and tracked delivery of legal, financial, and official documents.',
-    icon: 'DocumentTextIcon',
-  },
-  {
-    id: 'medical',
-    title: 'Medical Logistics',
-    description: 'Temperature-controlled and compliant handling of pharmaceuticals and medical devices across Nepal and internationally.',
-    icon: 'HeartIcon',
     featured: true,
-    colSpan: 'md:col-span-2',
+    colSpan: 'md:col-span-1',
   },
 ];
 
@@ -160,10 +94,10 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
         </p>
       </div>
 
-      <div className="flex items-center gap-1.5 text-[#172A8A] text-sm font-semibold group-hover:gap-2.5 transition-all duration-200">
+      {/* <div className="flex items-center gap-1.5 text-[#172A8A] text-sm font-semibold group-hover:gap-2.5 transition-all duration-200">
         Learn More
         <Icon name="ArrowRightIcon" size={14} />
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -182,25 +116,16 @@ export default function ServicesSection() {
               className="font-extrabold text-[#0D1117] tracking-tight"
               style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1 }}
             >
-              Complete Logistics<br />
-              <span className="text-[#172A8A]">Solutions</span>
+              Courier<br />
+              <span className="text-[#172A8A]">Services</span>
             </h2>
           </div>
           <p className="max-w-sm text-[#6B7280] text-sm leading-relaxed md:text-right">
-            From a single envelope to full container loads — SwiftYak handles every shipment with precision and care.
+            SwiftYak handles pickup and support in Nepal, with reliable delivery every step of the way.
           </p>
         </div>
 
-        {/* Bento Grid */}
-        {/* 
-          Row 1 (lg): [col-1+2: Domestic cs-2] [col-3: International]
-          Row 2 (lg): [col-1: Air] [col-2: Sea] [col-3: Road]
-          Row 3 (lg): [col-1: Freight] [col-2: Customs] [col-3: Import]
-          Row 4 (lg): [col-1: Export] [col-2: Business] [col-3: Ecommerce]
-          Row 5 (lg): [col-1: Document] [col-2+3: Medical cs-2]
-          Placed 13/13 ✓
-        */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
           {SERVICES.map((service, i) => (
             <ServiceCard key={service.id} service={service} index={i} />
           ))}

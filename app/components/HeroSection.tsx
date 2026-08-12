@@ -28,20 +28,6 @@ type CityPin = { x: number; y: number; label: string; primary: boolean };
 const WORLD_PINS: CityPin[] = [{"x":53.5,"y":15.6,"label":"Kathmandu","primary":true},{"x":47,"y":16.5,"label":"Dubai","primary":false},{"x":51.5,"y":15.6,"label":"Delhi","primary":false},{"x":35.5,"y":8.7,"label":"London","primary":false},{"x":19.5,"y":12.1,"label":"New York","primary":false},{"x":67.5,"y":29.4,"label":"Sydney","primary":false},{"x":65.5,"y":13.9,"label":"Tokyo","primary":false},{"x":60.5,"y":12.1,"label":"Beijing","primary":false}];
 const NEPAL_PINS: CityPin[] = [{"x":28,"y":16.5,"label":"Kathmandu","primary":true},{"x":21,"y":13,"label":"Pokhara","primary":false},{"x":38,"y":23.4,"label":"Biratnagar","primary":false},{"x":38,"y":21.7,"label":"Dharan","primary":false},{"x":18,"y":16.5,"label":"Butwal","primary":false},{"x":8.5,"y":13.9,"label":"Nepalgunj","primary":false},{"x":23,"y":16.5,"label":"Bharatpur","primary":false},{"x":25.5,"y":20.8,"label":"Birgunj","primary":false}];
 
-const GLOBAL_TESTIMONIALS = [
-  { initials: 'AR', name: 'Aarav R.', city: 'Kathmandu \u2192 Dubai', note: 'Cleared customs and delivered in 36 hrs.', rating: 5 },
-  { initials: 'SK', name: 'Sunita K.', city: 'Kathmandu \u2192 London', note: 'Tracked every step, arrived early.', rating: 5 },
-  { initials: 'MP', name: 'Michael P.', city: 'Kathmandu \u2192 New York', note: 'Careful handling, zero damage.', rating: 5 },
-  { initials: 'YT', name: 'Yuki T.', city: 'Kathmandu \u2192 Tokyo', note: 'Support answered within minutes.', rating: 5 },
-];
-
-const NEPAL_TESTIMONIALS = [
-  { initials: 'RB', name: 'Rita B.', city: 'Kathmandu \u2192 Pokhara', note: 'Same-day delivery, very smooth.', rating: 5 },
-  { initials: 'SG', name: 'Sujan G.', city: 'Kathmandu \u2192 Biratnagar', note: 'Driver called ahead, right on time.', rating: 5 },
-  { initials: 'PT', name: 'Puja T.', city: 'Kathmandu \u2192 Butwal', note: 'Affordable and dependable, every time.', rating: 5 },
-  { initials: 'DL', name: 'Dipesh L.', city: 'Kathmandu \u2192 Dharan', note: 'Cash on delivery made it effortless.', rating: 5 },
-];
-
 const LOGO_NAVY = '#041938';
 
 /* ------------------------------------------------------------------ */
@@ -171,7 +157,7 @@ function SpinningOrb({ mode }: { mode: Mode }) {
       <div className="orb-ring" />
       <div className="orb-badge">
         <Icon name={mode === 'global' ? 'GlobeAltIcon' : 'MapIcon'} size={13} className="text-[#EFB000]" />
-        <span>{mode === 'global' ? 'Live network' : 'Domestic network'}</span>
+        <span>{mode === 'global' ? 'Global network' : 'Domestic network'}</span>
       </div>
       <style jsx>{`
         .orb-wrap {
@@ -267,109 +253,6 @@ function SpinningOrb({ mode }: { mode: Mode }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Floating "customer satisfied" card                                  */
-/* ------------------------------------------------------------------ */
-
-function SatisfactionCard({ mode }: { mode: Mode }) {
-  const list = mode === 'global' ? GLOBAL_TESTIMONIALS : NEPAL_TESTIMONIALS;
-  const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [mode]);
-
-  useEffect(() => {
-    const cycle = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % list.length);
-        setVisible(true);
-      }, 350);
-    }, 4200);
-    return () => clearInterval(cycle);
-  }, [list.length]);
-
-  const t = list[index];
-
-  return (
-    <div
-      className="pointer-events-none w-full transition-all duration-350"
-      style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(6px)' }}
-    >
-      <div className="rounded-2xl bg-white/95 backdrop-blur-md shadow-2xl px-3.5 py-2.5 border border-white/40">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-xs font-bold text-white"
-            style={{ background: `linear-gradient(135deg, ${LOGO_NAVY}, #0A2A5C)` }}
-          >
-            {t.initials}
-          </div>
-          <div className="min-w-0">
-            <p className="text-[13px] font-bold truncate" style={{ color: LOGO_NAVY }}>
-              {t.name}
-            </p>
-            <p className="text-[11px] text-slate-500 truncate">{t.city}</p>
-          </div>
-          <div className="ml-auto flex items-center gap-0.5">
-            <Icon name="CheckCircleIcon" size={16} className="text-emerald-500" />
-          </div>
-        </div>
-        <p className="text-[12px] text-slate-600 mt-2 leading-snug">{t.note}</p>
-        <div className="flex items-center gap-0.5 mt-1.5">
-          {Array.from({ length: t.rating }).map((_, i) => (
-            <Icon key={i} name="StarIcon" size={12} className="text-[#EFB000]" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Live shipment activity feed                                         */
-/* ------------------------------------------------------------------ */
-
-const GLOBAL_ACTIVITY = [
-  { icon: 'GlobeAltIcon', text: 'Parcel to Dubai', status: 'Customs cleared', time: '2m ago', live: true },
-  { icon: 'TruckIcon', text: 'Parcel to London', status: 'Out for delivery', time: '18m ago', live: false },
-  { icon: 'ArchiveBoxIcon', text: 'Parcel to Tokyo', status: 'Picked up', time: '41m ago', live: false },
-];
-
-const NEPAL_ACTIVITY = [
-  { icon: 'TruckIcon', text: 'Parcel to Pokhara', status: 'Out for delivery', time: '6m ago', live: true },
-  { icon: 'GlobeAltIcon', text: 'Parcel to Biratnagar', status: 'In transit', time: '22m ago', live: false },
-  { icon: 'CheckCircleIcon', text: 'Parcel to Butwal', status: 'Delivered', time: '1h ago', live: false },
-];
-
-function ActivityFeed({ mode }: { mode: Mode }) {
-  const items = mode === 'global' ? GLOBAL_ACTIVITY : NEPAL_ACTIVITY;
-
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-xl px-4 py-3">
-      <p className="text-[10px] font-semibold tracking-widest uppercase text-white/40 mb-2">Recent activity</p>
-      <div className="flex flex-col gap-2.5">
-        {items.map((item, i) => (
-          <div key={item.text} className="flex items-center gap-2.5">
-            <div className="w-7 h-7 shrink-0 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center">
-              <Icon name={item.icon as never} size={13} className="text-[#EFB000]" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[12px] font-semibold text-white/85 truncate">{item.text}</p>
-              <p className="text-[11px] text-white/45 truncate">{item.status}</p>
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-              {i === 0 && item.live && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
-              <span className="text-[10px] text-white/35">{item.time}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Hero                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -381,26 +264,23 @@ const COPY: Record<Mode, {
   trust: { label: string; icon: string }[];
 }> = {
   global: {
-    eyebrow: "Nepal's Premier International Courier",
+    eyebrow: "Nepal's International Courier",
     headlineA: 'Nepal',
     headlineB: 'World.',
-    sub: 'Swift Yak provides reliable international shipping, freight forwarding, and import/export logistics with real-time tracking and professional customer support in over 50 countries.',
+    sub: 'SwiftYak handles pickup, documentation, and support in Nepal, and works with a trusted delivery partner to get your shipment internationally with full tracking.',
     trust: [
-      { label: '50+ Countries', icon: 'GlobeAltIcon' },
-      { label: '10,000+ Packages', icon: 'ArchiveBoxIcon' },
-      { label: '99% On-Time', icon: 'CheckCircleIcon' },
+      { label: 'International Courier', icon: 'GlobeAltIcon' },
       { label: '24/7 Support', icon: 'PhoneIcon' },
     ],
   },
   nepal: {
-    eyebrow: "Nepal's Premier Domestic Courier",
+    eyebrow: "Nepal's Domestic Courier",
     headlineA: 'Kathmandu',
     headlineB: 'Nepal.',
-    sub: 'Swift Yak connects all seven provinces with same-day valley delivery, next-day inter-city routes, and cash-on-delivery, backed by over a decade of local logistics experience.',
+    sub: 'SwiftYak connects all seven provinces with same-day valley delivery, next-day inter-city routes, and cash-on-delivery.',
     trust: [
-      { label: '77 Districts', icon: 'MapIcon' },
+      { label: 'Domestic Delivery', icon: 'MapIcon' },
       { label: 'Same-Day Valley', icon: 'ClockIcon' },
-      { label: '15+ Years Local', icon: 'CheckCircleIcon' },
       { label: 'Cash on Delivery', icon: 'BanknotesIcon' },
     ],
   },
@@ -501,20 +381,12 @@ export default function HeroSection() {
               <span className="text-[10px] font-semibold tracking-widest uppercase text-white/50">
                 {mode === 'global' ? 'Global network' : 'Domestic network'}
               </span>
-              <span className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Live
-              </span>
             </div>
             <div className="relative h-[150px] md:h-[170px] lg:h-[200px] xl:h-[220px] opacity-90">
               <RouteMap mode={mode} />
             </div>
           </div>
         </div>
-
-        <ActivityFeed mode={mode} />
-
-        <SatisfactionCard mode={mode} />
       </div>
 
       {/* Hero content */}
@@ -573,9 +445,9 @@ export default function HeroSection() {
             {copy.sub}
           </p>
 
-          {/* Longevity / trust line */}
+          {/* Delivery model clarification */}
           <p className="text-sm text-[#EFB000]/90 font-semibold mb-10 tracking-wide">
-            15+ years moving Nepal&apos;s parcels &mdash; on the ground and around the globe.
+            Domestic and international delivery, backed by trusted logistics partners.
           </p>
 
           {/* CTAs */}
@@ -614,7 +486,7 @@ export default function HeroSection() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-hidden="true">
+   { /*  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-hidden="true">
         <span className="text-white/30 text-xs font-medium tracking-widest uppercase">Scroll</span>
         <div className="w-px h-10 bg-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[#EFB000] animate-scroll-line" />
@@ -646,7 +518,7 @@ export default function HeroSection() {
             transform: translateY(0);
           }
         }
-      `}</style>
+      `}</style> */}
     </section>
   );
 }

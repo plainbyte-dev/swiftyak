@@ -3,12 +3,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Icon from '@/components/ui/AppIcon';
 
-const STATS = [
-  { value: 50, suffix: '+', label: 'Countries Connected', icon: 'GlobeAltIcon', description: 'Global network' },
-  { value: 10000, suffix: '+', label: 'Packages Delivered', icon: 'ArchiveBoxIcon', description: 'Monthly average' },
-  { value: 99, suffix: '%', label: 'Customer Satisfaction', icon: 'StarIcon', description: 'Based on 2,400+ reviews' },
-  { value: 24, suffix: '/7', label: 'Support Available', icon: 'PhoneIcon', description: 'Always here for you' },
-];
+// Do not add unverified figures here. Use partner-attributed, non-numeric
+// claims until real, confirmed numbers exist for SwiftYak and its delivery partners.
+const STATS: { value: number; suffix: string; label: string; icon: string; description: string }[] = [];
 
 function CounterNumber({ target, suffix }: { target: number; suffix: string }) {
   const [count, setCount] = useState(0);
@@ -49,6 +46,8 @@ function CounterNumber({ target, suffix }: { target: number; suffix: string }) {
 }
 
 export default function StatsSection() {
+  if (STATS.length === 0) return null;
+
   return (
     <section className="py-20 sm:py-24 bg-[#041938] relative overflow-hidden">
       {/* Background decoration */}

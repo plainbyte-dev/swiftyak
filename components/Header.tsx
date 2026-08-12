@@ -8,8 +8,6 @@ import Icon from '@/components/ui/AppIcon';
 const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/#services' },
-  { label: 'Tracking', href: '/tracking' },
-  { label: 'Get Quote', href: '/get-quote' },
   { label: 'Industries', href: '/#industries' },
   { label: 'About', href: '/#about' },
   { label: 'Contact', href: '/#contact' },
@@ -18,11 +16,16 @@ const navLinks = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const raf = requestAnimationFrame(() => setMounted(true));
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   useEffect(() => {
@@ -37,13 +40,17 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500  ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled ? 'glass-nav py-3 shadow-sm' : 'bg-transparent py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <Link
+            href="/"
+            className={`flex items-center gap-2.5 group ${mounted ? 'nav-item-in' : 'nav-item-pre'}`}
+            style={{ animationDelay: mounted ? '0s' : undefined }}
+          >
             <div className="relative flex items-center justify-center">
               {/* Soft glow so the navy logo mark stays visible over the dark hero background */}
               {!scrolled && (
@@ -68,7 +75,7 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-7">
-            {navLinks?.map((link) => (
+            {navLinks?.map((link, i) => (
               <Link
                 key={link?.href}
                 href={link?.href}
@@ -76,7 +83,8 @@ export default function Header() {
                   scrolled
                     ? 'text-[#0D1117] hover:text-[#172A8A]'
                     : 'text-white/85 hover:text-white'
-                }`}
+                } ${mounted ? 'nav-item-in' : 'nav-item-pre'}`}
+                style={{ animationDelay: mounted ? `${(i + 1) * 0.05}s` : undefined }}
               >
                 {link?.label}
               </Link>
@@ -90,16 +98,20 @@ export default function Header() {
               className={`text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200 ${
                 scrolled
                   ? 'text-[#172A8A] hover:bg-[#EEF0F7]' : 'text-white/85 hover:text-white'
-              }`}
+              } ${mounted ? 'nav-item-in' : 'nav-item-pre'}`}
+              style={{ animationDelay: mounted ? `${(navLinks.length + 1) * 0.05}s` : undefined }}
             >
               Track
             </Link>
             <Link
               href="/get-quote"
-              className="text-sm font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              className={`text-sm font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 ${
+                mounted ? 'nav-item-in' : 'nav-item-pre'
+              }`}
               style={{
                 background: 'linear-gradient(135deg, #EFB000 0%, #FFD040 50%, #D4960A 100%)',
                 color: '#172A8A',
+                animationDelay: mounted ? `${(navLinks.length + 2) * 0.05}s` : undefined,
               }}
             >
               Book Shipment

@@ -10,15 +10,15 @@ const FAQS = [
   },
   {
     q: 'What countries does SwiftYak deliver to?',
-    a: 'We deliver to 50+ countries worldwide, with key routes to India, China, UAE, UK, USA, Australia, Japan, Singapore, and across Southeast Asia and Europe. Contact us for specific country availability.',
+    a: 'International shipments are handled through our logistics partner\'s global delivery network. Contact us with your destination and we\'ll confirm availability before you book.',
   },
   {
     q: 'How long does international shipping take from Nepal?',
-    a: 'Air freight to major destinations typically takes 3-7 business days. Sea freight takes 20-45 days depending on the destination. Express air options are available for urgent shipments with 1-3 day delivery to select countries.',
+    a: 'Transit times for international shipments are set by our logistics partner and vary by destination and service level. Contact us with your route and we\'ll share the current estimated transit time for your shipment.',
   },
   {
     q: 'Do you handle customs clearance?',
-    a: 'Yes. Our dedicated customs team prepares all required documentation including commercial invoices, packing lists, certificates of origin, and handles clearance on both ends. This is included in our international shipping services.',
+    a: 'For international shipments, customs documentation and clearance are handled by our logistics partner as part of their courier service. We help you prepare the shipment on the Nepal side, but do not operate independent customs infrastructure.',
   },
   {
     q: 'What items are prohibited from shipping?',
@@ -28,10 +28,10 @@ const FAQS = [
     q: 'How is shipping cost calculated?',
     a: 'Pricing is based on dimensional weight (whichever is greater between actual weight and volumetric weight), destination, service type, and any special handling requirements. Use our online calculator for instant estimates.',
   },
-  {
-    q: 'Do you offer business accounts?',
-    a: 'Yes. Business accounts receive dedicated relationship managers, monthly invoicing, volume discounts, API integration for tracking, and priority handling. Contact our sales team to set up a corporate account.',
-  },
+  // {
+  //   q: 'Do you offer business accounts?',
+  //   a: 'Yes. Business accounts receive dedicated relationship managers, monthly invoicing, volume discounts, API integration for tracking, and priority handling. Contact our sales team to set up a corporate account.',
+  // },
   {
     q: 'What are your business hours?',
     a: 'Our offices are open Sunday to Friday, 9:00 AM to 6:00 PM NST. WhatsApp and email support is available 24/7 for urgent queries. Public holidays may affect pickup schedules.',

@@ -16,9 +16,7 @@ const footerLinks = [
     group: 'Services',
     links: [
       { label: 'Domestic Courier', href: '/#services' },
-      { label: 'International Shipping', href: '/#services' },
-      { label: 'Air Freight', href: '/#services' },
-      { label: 'Sea Freight', href: '/#services' },
+      { label: 'International Courier', href: '/#services' },
     ],
   },
   {
@@ -64,7 +62,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">
-              Nepal&apos;s premium courier and logistics company. Delivering with speed, safety, and trust since 2018.
+              Founded in 2026. SwiftYak handles pickup, booking, and support in Nepal, delivering domestically and internationally through trusted logistics partners.
             </p>
             <div className="flex items-center gap-2 text-sm text-white/40">
               <Icon name="MapPinIcon" size={14} className="text-[#EFB000]" />

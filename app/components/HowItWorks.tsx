@@ -32,7 +32,7 @@ const STEPS = [
     number: '05',
     icon: 'DocumentCheckIcon',
     title: 'Customs Clearance',
-    description: 'Our experts handle all customs documentation for seamless international crossings.',
+    description: 'For international shipments, our logistics partner handles customs documentation and clearance.',
   },
   {
     number: '06',
@@ -98,6 +98,7 @@ export default function HowItWorks() {
 
   return (
     <section
+      id="how-it-works"
       className="py-20 sm:py-28 overflow-hidden"
       style={{ backgroundColor: NEAR_BLACK }}
     >

@@ -11,8 +11,8 @@ const FEATURES = [
   },
   {
     icon: 'GlobeAltIcon',
-    title: 'Global Network',
-    description: 'Connected to 50+ countries through our trusted airline and freight partner network.',
+    title: 'Global Reach',
+    description: 'International shipments are delivered through our trusted logistics partner network.',
   },
   {
     icon: 'SignalIcon',
@@ -26,19 +26,19 @@ const FEATURES = [
   },
   {
     icon: 'DocumentCheckIcon',
-    title: 'Fast Customs Support',
-    description: 'Our customs experts handle paperwork and clearance so your shipments never get stuck.',
+    title: 'Customs Support',
+    description: 'For international shipments, our logistics partner manages customs documentation and clearance.',
   },
   {
     icon: 'CurrencyDollarIcon',
     title: 'Competitive Pricing',
     description: 'Transparent rates with no hidden fees. Volume discounts available for business accounts.',
   },
-  {
-    icon: 'BuildingOfficeIcon',
-    title: 'Business Accounts',
-    description: 'Dedicated relationship managers, monthly invoicing, and priority handling for corporate clients.',
-  },
+  // {
+  //   icon: 'BuildingOfficeIcon',
+  //   title: 'Business Accounts',
+  //   description: 'Dedicated relationship managers, monthly invoicing, and priority handling for corporate clients.',
+  // },
   {
     icon: 'ChatBubbleLeftRightIcon',
     title: 'Dedicated Support',
@@ -121,7 +121,7 @@ export default function WhySwiftYak() {
               <span className="text-[#172A8A]">Built for the World</span>
             </h2>
             <p className="text-[#6B7280] leading-relaxed mb-8 text-base">
-              SwiftYak was founded by logistics veterans who understood Nepal&apos;s unique challenges — mountainous terrain, diverse trade corridors, and the need for a truly reliable partner. We&apos;ve spent years building the infrastructure, partnerships, and expertise to serve you better.
+              SwiftYak was founded in 2026 to make reliable courier service simple in Nepal. Rather than build parallel freight and customs infrastructure, we work with established logistics partners for domestic and international delivery — pairing trusted networks with SwiftYak&apos;s booking, tracking, and support.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -129,22 +129,15 @@ export default function WhySwiftYak() {
                 className="flex-1 rounded-2xl border p-5 text-center"
                 style={{ backgroundColor: '#FFFFFF', borderColor: '#E2E6F0' }}
               >
-                <p className="text-3xl font-extrabold mb-1" style={{ color: '#172A8A' }}>8+</p>
-                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6B7280' }}>Years of Experience</p>
+                <p className="text-lg font-extrabold mb-1" style={{ color: '#172A8A' }}>Domestic Delivery</p>
+                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6B7280' }}>Across Nepal</p>
               </div>
               <div
                 className="flex-1 rounded-2xl border p-5 text-center"
                 style={{ backgroundColor: '#FFFFFF', borderColor: '#E2E6F0' }}
               >
-                <p className="text-3xl font-extrabold mb-1" style={{ color: '#EFB000' }}>71+</p>
-                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6B7280' }}>Domestic Destinations</p>
-              </div>
-              <div
-                className="flex-1 rounded-2xl border p-5 text-center"
-                style={{ backgroundColor: '#FFFFFF', borderColor: '#E2E6F0' }}
-              >
-                <p className="text-3xl font-extrabold mb-1" style={{ color: '#172A8A' }}>50+</p>
-                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6B7280' }}>Countries Served</p>
+                <p className="text-lg font-extrabold mb-1" style={{ color: '#172A8A' }}>International Delivery</p>
+                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#6B7280' }}>Worldwide</p>
               </div>
             </div>
           </div>

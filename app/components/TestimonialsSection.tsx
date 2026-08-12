@@ -4,54 +4,30 @@ import React, { useState, useEffect } from 'react';
 import AppImage from '@/components/ui/AppImage';
 import Icon from '@/components/ui/AppIcon';
 
-const TESTIMONIALS = [
-{
-  name: 'Rajesh Shrestha',
-  role: 'Owner, Himalayan Crafts Export',
-  location: 'Kathmandu',
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_1a226a4fb-1763296724397.png",
-  text: 'SwiftYak has transformed how we export our handicrafts to Europe and the US. Their customs team handles everything — we just focus on production. Our delivery success rate went from 78% to 99% after switching.',
-  rating: 5,
-  tag: 'Export Client'
-},
-{
-  name: 'Priya Tamang',
-  role: 'E-commerce Founder, KathmanduStyle.com',
-  location: 'Lalitpur',
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_19590c494-1763294888289.png",
-  text: 'For my online store, speed matters. SwiftYak delivers across Nepal in 24-48 hours consistently. Their real-time tracking API integrates directly with my website, and my customers love the transparency.',
-  rating: 5,
-  tag: 'E-commerce'
-},
-{
-  name: 'Amir Khalid',
-  role: 'Procurement Manager, Gulf Trading Co.',
-  location: 'Dubai',
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_1ab434767-1765717415594.png",
-  text: 'We regularly import goods from Nepal to Dubai. SwiftYak\'s air freight service is remarkably reliable — documentation is always perfect, and we\'ve never had a customs delay since working with them.',
-  rating: 5,
-  tag: 'International Client'
-},
-{
-  name: 'Sushila Gurung',
-  role: 'Director, NepalMed Supplies',
-  location: 'Pokhara',
-  avatar: "https://img.rocket.new/generatedImages/rocket_gen_img_117d05c9b-1785220583700.png",
-  text: 'Medical logistics requires zero tolerance for errors. SwiftYak\'s temperature-controlled shipping and meticulous handling has made them our exclusive logistics partner for pharmaceutical distribution nationwide.',
-  rating: 5,
-  tag: 'Medical Logistics'
-}];
-
+// No real customer testimonials exist yet. Do not add placeholder/fabricated
+// quotes here — populate this array only with verified customer quotes.
+const TESTIMONIALS: {
+  name: string;
+  role: string;
+  location: string;
+  avatar: string;
+  text: string;
+  rating: number;
+  tag: string;
+}[] = [];
 
 export default function TestimonialsSection() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    if (TESTIMONIALS.length === 0) return;
     const timer = setInterval(() => {
       setActive((prev) => (prev + 1) % TESTIMONIALS?.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  if (TESTIMONIALS.length === 0) return null;
 
   const testimonial = TESTIMONIALS?.[active];
 

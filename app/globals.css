@@ -189,6 +189,31 @@
   100% { transform: translateX(10px); }
 }
 
+.nav-item-pre {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.nav-item-in {
+  animation: navItemIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes navItemIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-item-in {
+    animation: navItemFade 0.3s ease both;
+  }
+}
+
+@keyframes navItemFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }

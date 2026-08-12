@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Icon from '@/components/ui/AppIcon';
-import Link from 'next/link';
+import { submitBookingRequest, ApiError } from '@/lib/api';
 
 const NEPAL_CITIES = [
   'Kathmandu', 'Pokhara', 'Lalitpur', 'Biratnagar', 'Birgunj',
@@ -42,7 +42,9 @@ function calculateQuote(
   isInternational: boolean
 ): QuoteResult[] {
   // Mock pricing logic — backend integration point for real rates
-  const baseRates: Record<string, { pricePerKg: number; basePrice: number; days: string; icon: string }> = {
+  const baseRates: Record<string, { 
+    pricePerKg: number; basePrice: number; days: string; icon: string 
+  }> = {
     'domestic-express': { pricePerKg: 80, basePrice: 150, days: '1 day', icon: 'BoltIcon' },
     'domestic-standard': { pricePerKg: 50, basePrice: 100, days: '2-4 days', icon: 'TruckIcon' },
     'intl-air-express': { pricePerKg: 850, basePrice: 2500, days: '1-3 days', icon: 'PaperAirplaneIcon' },
@@ -101,7 +103,7 @@ function calculateQuote(
 }
 
 export default function QuoteCalculator() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState({ 
     origin: '',
     destination: '',
     destCountry: '',
@@ -117,8 +119,20 @@ export default function QuoteCalculator() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const [contact, setContact] = useState({ 
+    name: '', 
+    email: '', 
+    phone: '' 
+  });
+  const [contactErrors, setContactErrors] = useState<Record<string, string>>({});
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [bookingReference, setBookingReference] = useState<string | null>(null);
+
   const validate = () => {
-    const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {
+
+    };
     if (!form.origin) newErrors.origin = 'Select origin city';
     if (!form.weight || Number(form.weight) <= 0) newErrors.weight = 'Enter valid weight';
     if (!form.serviceType) newErrors.serviceType = 'Select a service type';
@@ -150,17 +164,59 @@ export default function QuoteCalculator() {
     setCalculated(false);
     setResults([]);
     setErrors({});
+    setContact({ name: '', email: '', phone: '' });
+    setContactErrors({});
+    setBookingError('');
+    setBookingReference(null);
+  };
+
+  const handleSubmitBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: Record<string, string> = {};
+    if (!contact.name.trim()) newErrors.name = 'Enter your full name';
+    if (!/^\S+@\S+\.\S+$/.test(contact.email)) newErrors.email = 'Enter a valid email';
+    if (!contact.phone.trim()) newErrors.phone = 'Enter a phone number';
+    setContactErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    setBookingLoading(true);
+    setBookingError('');
+    try {
+      const res = await submitBookingRequest({
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        origin: form.origin,
+        destination: form.isInternational ? form.destCountry : form.destination,
+        isInternational: form.isInternational,
+        destCountry: form.destCountry,
+        weightKg: Number(form.weight),
+        serviceType: form.serviceType,
+        estimatedPrice: results[0]?.price,
+      });
+      setBookingReference(res.data._id.slice(-8).toUpperCase());
+    } catch (err) {
+      setBookingError(
+        err instanceof ApiError
+          ? err.message
+          : 'Something went wrong submitting your request. Please try again shortly.'
+      );
+    } finally {
+      setBookingLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F8F9FC] pb-20">
-      {/* Hero — starts at y=0 (no pt-24 on this outer wrapper) so the fixed
+      {
+      /* Hero — starts at y=0 (no pt-24 on this outer wrapper) so the fixed
           Header's unscrolled white-text state sits on top of this dark
           navy gradient instead of the light page background below it.
           pt-24 is applied here instead, to still reserve space for the
           fixed header while keeping the gradient full-bleed to the top.
           Background is hardcoded inline (matches the .hero-gradient class
-          in globals.css) rather than relying on the shared CSS class. */}
+          in globals.css) rather than relying on the shared CSS class. */
+          }
       <div
         className="pt-32 pb-28 px-4"
         style={{
@@ -309,7 +365,9 @@ export default function QuoteCalculator() {
                   </p>
                 </div>
 
-                {/* Service Type */}
+                {
+                /* Service Type */
+                }
                 <div>
                   <label className="block text-xs font-bold text-[#0D1117] mb-3 uppercase tracking-wide">Service Type</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -415,13 +473,70 @@ export default function QuoteCalculator() {
                   * Prices are estimates. Final rates may vary based on actual dimensions, fuel surcharges, and destination-specific fees.
                 </p>
 
-                <Link
-                  href="/#contact"
-                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#172A8A] text-white font-bold py-3 rounded-xl hover:bg-[#1E3AA8] transition-all text-sm"
-                >
-                  <Icon name="PaperAirplaneIcon" size={16} />
-                  Book This Shipment
-                </Link>
+                {bookingReference ? (
+                  <div className="mt-4 rounded-2xl border-2 border-[#15803D] bg-[#F0FDF4] p-4 text-center">
+                    <Icon name="CheckCircleIcon" size={28} className="text-[#15803D] mx-auto mb-2" />
+                    <p className="font-bold text-[#0D1117] text-sm mb-1">Request Received</p>
+                    <p className="text-[#6B7280] text-xs leading-relaxed">
+                      Reference <span className="font-bold text-[#0D1117]">#{bookingReference}</span>.
+                      Our team will confirm pricing and contact you shortly.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmitBooking} className="mt-4 space-y-3 border-t border-[#E2E6F0] pt-4">
+                    <p className="text-xs font-bold text-[#0D1117] uppercase tracking-wide">Your Contact Details</p>
+                    <div>
+                      <input
+                        type="text"
+                        value={contact.name}
+                        onChange={(e) => setContact({ ...contact, name: e.target.value })}
+                        placeholder="Full name"
+                        className={`w-full px-4 py-2.5 rounded-xl border bg-[#F8F9FC] text-[#0D1117] text-sm focus:outline-none focus:border-[#172A8A] transition-all ${contactErrors.name ? 'border-red-400' : 'border-[#E2E6F0]'}`}
+                      />
+                      {contactErrors.name && <p className="text-red-500 text-xs mt-1">{contactErrors.name}</p>}
+                    </div>
+                    <div>
+                      <input
+                        type="email"
+                        value={contact.email}
+                        onChange={(e) => setContact({ ...contact, email: e.target.value })}
+                        placeholder="Email address"
+                        className={`w-full px-4 py-2.5 rounded-xl border bg-[#F8F9FC] text-[#0D1117] text-sm focus:outline-none focus:border-[#172A8A] transition-all ${contactErrors.email ? 'border-red-400' : 'border-[#E2E6F0]'}`}
+                      />
+                      {contactErrors.email && <p className="text-red-500 text-xs mt-1">{contactErrors.email}</p>}
+                    </div>
+                    <div>
+                      <input
+                        type="tel"
+                        value={contact.phone}
+                        onChange={(e) => setContact({ ...contact, phone: e.target.value })}
+                        placeholder="Phone number"
+                        className={`w-full px-4 py-2.5 rounded-xl border bg-[#F8F9FC] text-[#0D1117] text-sm focus:outline-none focus:border-[#172A8A] transition-all ${contactErrors.phone ? 'border-red-400' : 'border-[#E2E6F0]'}`}
+                      />
+                      {contactErrors.phone && <p className="text-red-500 text-xs mt-1">{contactErrors.phone}</p>}
+                    </div>
+
+                    {bookingError && <p className="text-red-500 text-xs">{bookingError}</p>}
+
+                    <button
+                      type="submit"
+                      disabled={bookingLoading}
+                      className="w-full flex items-center justify-center gap-2 bg-[#172A8A] text-white font-bold py-3 rounded-xl hover:bg-[#1E3AA8] transition-all text-sm disabled:opacity-60"
+                    >
+                      {bookingLoading ? (
+                        <>
+                          <Icon name="ArrowPathIcon" size={16} className="animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Icon name="PaperAirplaneIcon" size={16} />
+                          Submit Booking Request
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
               </div>
             )}
 
