@@ -19,14 +19,14 @@ const CONTACT_INFO = [
   {
     icon: 'EnvelopeIcon',
     label: 'Email',
-    value: 'yakswift9@gmail.com',
-    href: 'mailto:yakswift9@gmail.com',
+    value: 'info@siwftyak.com.np',
+    href: 'mailto:info@swiftyak.com.np',
   },
   {
     icon: 'ChatBubbleLeftEllipsisIcon',
     label: 'WhatsApp',
     value: '+977 9867887967',
-    href: 'https://wa.me/977981234567',
+    href: 'https://wa.me/9779867887967',
   },
   {
     icon: 'ClockIcon',
