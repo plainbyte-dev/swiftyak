@@ -1,7 +1,7 @@
 {
-  "name": "courierdesk-backend",
+  "name": "swiftyak-admin-backend",
   "version": "1.0.0",
-  "description": "Backend API for CourierDesk — partner delivery management portal",
+  "description": "Backend API for CourierDesk \u2014 partner delivery management portal",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
