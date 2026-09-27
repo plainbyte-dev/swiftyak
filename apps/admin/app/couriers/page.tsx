@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import AppLayout from '@/components/AppLayout';
+import FloatingMenu from '@/components/ui/FloatingMenu';
 import { Truck, Plus, Search, MoreHorizontal, Edit2, Trash2, CheckCircle, X, ChevronLeft, ChevronRight, MapPin, Phone, WifiOff, Eye, Loader2, AlertCircle } from 'lucide-react';
 import {
   getCouriers,
@@ -61,6 +62,8 @@ export default function CouriersPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const closeMenu = useCallback(() => setMenuOpen(null), []);
   const [viewTarget, setViewTarget] = useState<ApiCourier | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -294,14 +297,14 @@ export default function CouriersPage() {
                     </div>
                     <div className="relative">
                       <button
-                        onClick={() => setMenuOpen(menuOpen === courier._id ? null : courier._id)}
+                        onClick={(e) => { setMenuAnchor(e.currentTarget); setMenuOpen(menuOpen === courier._id ? null : courier._id); }}
                         disabled={deletingId === courier._id}
                         className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground transition-colors disabled:opacity-50"
                       >
                         {deletingId === courier._id ? <Loader2 size={15} className="animate-spin" /> : <MoreHorizontal size={15} />}
                       </button>
                       {menuOpen === courier._id && (
-                        <div className="absolute right-0 top-8 z-20 bg-card border border-border rounded-xl shadow-lg py-1 min-w-[160px]">
+                        <FloatingMenu anchor={menuAnchor} onClose={closeMenu}>
                           <button onClick={() => { setViewTarget(courier); setMenuOpen(null); }} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-foreground">
                             <Eye size={14} />View Details
                           </button>
@@ -321,7 +324,7 @@ export default function CouriersPage() {
                           <button onClick={() => handleDelete(courier._id)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-destructive">
                             <Trash2 size={14} />Remove
                           </button>
-                        </div>
+                        </FloatingMenu>
                       )}
                     </div>
                   </div>
@@ -482,7 +485,6 @@ export default function CouriersPage() {
         </div>
       )}
 
-      {menuOpen && <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(null)} />}
     </AppLayout>
   );
 }

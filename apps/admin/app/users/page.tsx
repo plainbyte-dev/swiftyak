@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AppLayout from '@/components/AppLayout';
+import FloatingMenu from '@/components/ui/FloatingMenu';
 import {
   MoreHorizontal, Edit2, Trash2, CheckCircle, XCircle, Mail, X,
   ChevronLeft, ChevronRight, Shield, Truck as CourierIcon, Eye, Search,
@@ -59,6 +60,8 @@ export default function UsersPage() {
   const [addError, setAddError] = useState<string | null>(null);
 
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const closeMenu = useCallback(() => setMenuOpen(null), []);
   const [viewTarget, setViewTarget] = useState<ApiUser | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -312,15 +315,15 @@ export default function UsersPage() {
                         <td className="px-5 py-3.5">
                           <div className="relative flex items-center gap-1 justify-end">
                             <button onClick={() => setViewTarget(user)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"><Eye size={15} /></button>
-                            <button onClick={() => setMenuOpen(menuOpen === user._id ? null : user._id)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"><MoreHorizontal size={15} /></button>
+                            <button onClick={(e) => { setMenuAnchor(e.currentTarget); setMenuOpen(menuOpen === user._id ? null : user._id); }} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"><MoreHorizontal size={15} /></button>
                             {menuOpen === user._id && (
-                              <div className="absolute right-0 top-8 z-20 bg-card border border-border rounded-xl shadow-lg py-1 min-w-[160px]">
+                              <FloatingMenu anchor={menuAnchor} onClose={closeMenu}>
                                 <button onClick={() => openEdit(user)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-foreground"><Edit2 size={14} />Edit</button>
                                 <button onClick={() => toggleActive(user)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-foreground">
                                   {user.isActive ? <><XCircle size={14} />Deactivate</> : <><CheckCircle size={14} />Activate</>}
                                 </button>
                                 <button onClick={() => handleDelete(user._id)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-destructive"><Trash2 size={14} />Remove</button>
-                              </div>
+                              </FloatingMenu>
                             )}
                           </div>
                         </td>
@@ -525,7 +528,6 @@ export default function UsersPage() {
         </div>
       )}
 
-      {menuOpen && <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(null)} />}
     </AppLayout>
   );
 }

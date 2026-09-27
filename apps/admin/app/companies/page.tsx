@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import AppLayout from '@/components/AppLayout';
+import FloatingMenu from '@/components/ui/FloatingMenu';
 import {
   Building2, Plus, Search, MoreHorizontal, Edit2, Trash2,
   CheckCircle, Clock, XCircle, Phone, Mail, MapPin, X,
@@ -66,6 +67,8 @@ export default function CompaniesPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const closeMenu = useCallback(() => setMenuOpen(null), []);
   const [viewTarget, setViewTarget] = useState<ApiCompany | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -321,15 +324,15 @@ export default function CompaniesPage() {
                         <td className="px-5 py-3.5">
                           <div className="relative flex items-center gap-1 justify-end">
                             <button onClick={() => setViewTarget(company)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"><Eye size={15} /></button>
-                            <button onClick={() => setMenuOpen(menuOpen === company._id ? null : company._id)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"><MoreHorizontal size={15} /></button>
+                            <button onClick={(e) => { setMenuAnchor(e.currentTarget); setMenuOpen(menuOpen === company._id ? null : company._id); }} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"><MoreHorizontal size={15} /></button>
                             {menuOpen === company._id && (
-                              <div className="absolute right-0 top-8 z-20 bg-card border border-border rounded-xl shadow-lg py-1 min-w-[160px]">
+                              <FloatingMenu anchor={menuAnchor} onClose={closeMenu}>
                                 <button onClick={() => openEdit(company)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-foreground"><Edit2 size={14} />Edit</button>
                                 <button onClick={() => toggleStatus(company)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-foreground">
                                   {company.status === 'active' ? <><XCircle size={14} />Suspend</> : <><CheckCircle size={14} />Activate</>}
                                 </button>
                                 <button onClick={() => handleDelete(company._id)} className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-muted text-destructive"><Trash2 size={14} />Delete</button>
-                              </div>
+                              </FloatingMenu>
                             )}
                           </div>
                         </td>
@@ -468,7 +471,6 @@ export default function CompaniesPage() {
         </div>
       )}
 
-      {menuOpen && <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(null)} />}
     </AppLayout>
   );
 }
