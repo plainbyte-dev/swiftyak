@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/AppLayout';
 import { ArrowLeft, Plus, Trash2, Loader2, AlertCircle, Copy } from 'lucide-react';
-import { createVoucher, getBills, getCompanies, getVouchers, ApiError } from '@/lib/api';
-import type { ApiCompany, PaymentMode } from '@/lib/types';
+import BillPicker from '@/components/bills/BillPicker';
+import { createVoucher, getCompanies, getVouchers, ApiError } from '@/lib/api';
+import type { ApiBill, ApiCompany, PaymentMode } from '@/lib/types';
 import { amountInWords, fiscalYear, formatBillNumber, formatBsDate, formatNpr, PAYMENT_MODE_LABELS } from '@/lib/billing';
 
 interface ItemRow {
@@ -43,8 +44,7 @@ export default function NewVoucherPage() {
   const [paymentMode, setPaymentMode] = useState<PaymentMode>('bank');
   const [paymentRef, setPaymentRef] = useState('');
   const [supplierBillNo, setSupplierBillNo] = useState('');
-  const [againstBillNo, setAgainstBillNo] = useState('');
-  const [copying, setCopying] = useState(false);
+  const [againstBill, setAgainstBill] = useState<ApiBill | null>(null);
   const [copyNote, setCopyNote] = useState<string | null>(null);
   const [items, setItems] = useState<ItemRow[]>(() => [emptyItem()]);
   const [otherCharges, setOtherCharges] = useState('');
@@ -94,46 +94,35 @@ export default function NewVoucherPage() {
   }
 
   /** Pull the consignments from our customer bill so only the courier's rates need entering. */
-  async function copyFromBill() {
-    const n = Number(againstBillNo);
-    if (!Number.isInteger(n) || n <= 0) {
-      setCopyNote('Enter our bill number first.');
-      return;
-    }
-    setCopying(true);
+  function copyFromBill(bill: ApiBill) {
+    setItems(
+      bill.items.map((item) => ({
+        key: nextKey++,
+        awb: item.awb,
+        from: item.from,
+        to: item.to,
+        description: item.description,
+        quantity: String(item.quantity),
+        unit: item.unit,
+        rate: '',
+      }))
+    );
+    setCopyNote(`Copied ${bill.items.length} consignment${bill.items.length === 1 ? '' : 's'} from bill #${formatBillNumber(bill.billNumber)}. Enter the courier's rates.`);
+  }
+
+  function chooseBill(bill: ApiBill | null) {
+    setAgainstBill(bill);
     setCopyNote(null);
-    try {
-      const res = await getBills({ search: String(n), perPage: 20 });
-      const bill = res.data.find((b) => b.billNumber === n);
-      if (!bill) {
-        setCopyNote(`Bill #${formatBillNumber(n)} not found.`);
-        return;
-      }
-      setItems(
-        bill.items.map((item) => ({
-          key: nextKey++,
-          awb: item.awb,
-          from: item.from,
-          to: item.to,
-          description: item.description,
-          quantity: String(item.quantity),
-          unit: item.unit,
-          rate: '',
-        }))
-      );
-      setCopyNote(`Copied ${bill.items.length} consignment${bill.items.length === 1 ? '' : 's'} from bill #${formatBillNumber(n)} (${bill.customer.name}). Enter the courier's rates.`);
-    } catch (err) {
-      setCopyNote(err instanceof ApiError ? err.message : 'Could not load that bill.');
-    } finally {
-      setCopying(false);
-    }
+    if (error) setError(null);
+    // Fill the consignments straight away if nothing has been typed yet.
+    const untouched = items.every((item) => !item.awb && !item.description && !item.from && !item.to && !item.rate);
+    if (bill && untouched) copyFromBill(bill);
   }
 
   function validate(): string | null {
     if (!companyId) return 'Choose the partner company that was paid.';
     if (payee.pan.trim() && !/^\d{9}$/.test(payee.pan.trim())) return 'PAN must be exactly 9 digits.';
     if (!voucherDate) return 'Voucher date is required.';
-    if (againstBillNo && !(Number.isInteger(Number(againstBillNo)) && Number(againstBillNo) > 0)) return 'Our bill number must be a whole number.';
     for (const [i, item] of items.entries()) {
       if (!item.description.trim()) return `Item ${i + 1}: enter a description.`;
       if (!(Number(item.quantity) > 0)) return `Item ${i + 1}: quantity must be greater than 0.`;
@@ -177,7 +166,7 @@ export default function NewVoucherPage() {
         paymentMode,
         paymentRef: paymentRef.trim() || undefined,
         supplierBillNo: supplierBillNo.trim() || undefined,
-        againstBillNo: againstBillNo ? Number(againstBillNo) : undefined,
+        againstBillNo: againstBill?.billNumber,
         remarks: remarks.trim() || undefined,
       });
       router.push(`/vouchers/${data._id}`);
@@ -256,26 +245,17 @@ export default function NewVoucherPage() {
                 <input id="v-their-bill" value={supplierBillNo} onChange={(e) => setSupplierBillNo(e.target.value)} placeholder="From the courier's bill" className={inputClass} />
               </div>
               <div>
-                <label htmlFor="v-against" className="block text-xs font-600 text-muted-foreground mb-1.5">For our customer bill no.</label>
-                <div className="flex gap-2">
-                  <input
-                    id="v-against"
-                    inputMode="numeric"
-                    value={againstBillNo}
-                    onChange={(e) => { setAgainstBillNo(e.target.value.replace(/\D/g, '')); setCopyNote(null); }}
-                    placeholder="e.g. 12 (optional)"
-                    className={inputClass}
-                  />
+                <label htmlFor="v-against" className="block text-xs font-600 text-muted-foreground mb-1.5">For our customer bill</label>
+                <BillPicker id="v-against" value={againstBill} onChange={chooseBill} />
+                {againstBill && (
                   <button
                     type="button"
-                    onClick={copyFromBill}
-                    disabled={copying || !againstBillNo}
-                    title="Copy consignments from this bill"
-                    className="flex items-center gap-1.5 px-3 text-xs font-600 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50 whitespace-nowrap"
+                    onClick={() => copyFromBill(againstBill)}
+                    className="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-600 text-primary hover:underline"
                   >
-                    {copying ? <Loader2 size={13} className="animate-spin" /> : <Copy size={13} />} Copy consignments
+                    <Copy size={12} /> Copy its {againstBill.items.length} consignment{againstBill.items.length === 1 ? '' : 's'} into the items
                   </button>
-                </div>
+                )}
                 {copyNote && <p className="text-[11px] text-muted-foreground mt-1">{copyNote}</p>}
               </div>
             </div>
