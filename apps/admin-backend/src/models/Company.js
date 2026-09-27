@@ -7,11 +7,6 @@ const companySchema = new mongoose.Schema(
       required: [true, 'Company name is required'],
       trim: true,
     },
-    contact: {
-      type: String,
-      required: [true, 'Contact person is required'],
-      trim: true,
-    },
     email: {
       type: String,
       required: [true, 'Email is required'],

@@ -32,7 +32,6 @@ const PLAN_COLORS: Record<string, string> = {
 
 const EMPTY_FORM = {
   name: '',
-  contact: '',
   email: '',
   phone: '',
   address: '',
@@ -123,7 +122,6 @@ export default function CompaniesPage() {
     setEditTarget(c);
     setForm({
       name: c.name,
-      contact: c.contact,
       email: c.email,
       phone: c.phone ?? '',
       address: c.address ?? '',
@@ -136,8 +134,8 @@ export default function CompaniesPage() {
   }
 
   async function handleSave() {
-    if (!form.name.trim() || !form.contact.trim() || !form.email.trim()) {
-      setSaveError('Company name, contact, and email are required.');
+    if (!form.name.trim() || !form.email.trim()) {
+      setSaveError('Company name and email are required.');
       return;
     }
 
@@ -147,7 +145,6 @@ export default function CompaniesPage() {
       if (editTarget) {
         const { data: updated } = await updateCompany(editTarget._id, {
           name: form.name.trim(),
-          contact: form.contact.trim(),
           email: form.email.trim(),
           phone: form.phone.trim() || undefined,
           address: form.address.trim() || undefined,
@@ -157,7 +154,6 @@ export default function CompaniesPage() {
       } else {
         const { data: created } = await createCompany({
           name: form.name.trim(),
-          contact: form.contact.trim(),
           email: form.email.trim(),
           phone: form.phone.trim() || undefined,
           address: form.address.trim() || undefined,
@@ -270,7 +266,7 @@ export default function CompaniesPage() {
               <thead>
                 <tr className="border-b border-border bg-muted/40">
                   <th className="text-left px-5 py-3 text-xs font-600 text-muted-foreground uppercase tracking-wide">Company</th>
-                  <th className="text-left px-5 py-3 text-xs font-600 text-muted-foreground uppercase tracking-wide">Contact</th>
+                  <th className="text-left px-5 py-3 text-xs font-600 text-muted-foreground uppercase tracking-wide">Email / Phone</th>
                   <th className="text-left px-5 py-3 text-xs font-600 text-muted-foreground uppercase tracking-wide">Status</th>
                   <th className="text-left px-5 py-3 text-xs font-600 text-muted-foreground uppercase tracking-wide">Plan</th>
                   <th className="text-left px-5 py-3 text-xs font-600 text-muted-foreground uppercase tracking-wide">Joined</th>
@@ -310,8 +306,8 @@ export default function CompaniesPage() {
                           </div>
                         </td>
                         <td className="px-5 py-3.5">
-                          <p className="font-500 text-foreground">{company.contact}</p>
-                          <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Mail size={10} />{company.email}</span>
+                          <span className="text-sm text-foreground flex items-center gap-1"><Mail size={11} className="text-muted-foreground" />{company.email}</span>
+                          {company.phone && <span className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Phone size={10} />{company.phone}</span>}
                         </td>
                         <td className="px-5 py-3.5">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-600 ${sc.className}`}>
@@ -373,7 +369,6 @@ export default function CompaniesPage() {
               )}
               {[
                 { label: 'Company Name', key: 'name', placeholder: 'e.g. Meridian Logistics' },
-                { label: 'Contact Person', key: 'contact', placeholder: 'Full name' },
                 { label: 'Email', key: 'email', placeholder: 'contact@company.com' },
                 { label: 'Phone', key: 'phone', placeholder: '+1 212-555-0000' },
                 { label: 'Address', key: 'address', placeholder: '123 Main St, City, State' },

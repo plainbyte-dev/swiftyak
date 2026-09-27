@@ -12,7 +12,6 @@ export const getCompanies = asyncHandler(async (req, res) => {
   if (search) {
     filter.$or = [
       { name: { $regex: search, $options: 'i' } },
-      { contact: { $regex: search, $options: 'i' } },
       { email: { $regex: search, $options: 'i' } },
     ];
   }
@@ -56,14 +55,14 @@ export const getCompany = asyncHandler(async (req, res) => {
 // @route   POST /api/companies
 // @access  Private (admin, dispatcher) — ASSUMPTION: mirrors shipment/courier create permissions
 export const createCompany = asyncHandler(async (req, res) => {
-  const { name, contact, email, phone, address, status, plan } = req.body;
+  const { name, email, phone, address, status, plan } = req.body;
 
-  if (!name || !contact || !email) {
+  if (!name || !email) {
     res.status(400);
-    throw new Error('name, contact, and email are required');
+    throw new Error('name and email are required');
   }
 
-  const company = await Company.create({ name, contact, email, phone, address, status, plan });
+  const company = await Company.create({ name, email, phone, address, status, plan });
   res.status(201).json({ success: true, data: company });
 });
 
@@ -71,7 +70,7 @@ export const createCompany = asyncHandler(async (req, res) => {
 // @route   PATCH /api/companies/:id
 // @access  Private (admin, dispatcher)
 export const updateCompany = asyncHandler(async (req, res) => {
-  const { name, contact, email, phone, address, plan } = req.body;
+  const { name, email, phone, address, plan } = req.body;
 
   const company = await Company.findById(req.params.id);
   if (!company) {
@@ -80,7 +79,6 @@ export const updateCompany = asyncHandler(async (req, res) => {
   }
 
   if (name !== undefined) company.name = name;
-  if (contact !== undefined) company.contact = contact;
   if (email !== undefined) company.email = email;
   if (phone !== undefined) company.phone = phone;
   if (address !== undefined) company.address = address;
