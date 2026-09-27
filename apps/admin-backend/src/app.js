@@ -15,6 +15,7 @@ import bookingRequestRoutes from './routes/bookingRequestRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import billRoutes from './routes/billRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
+import { connectDB } from './config/db.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -69,6 +70,18 @@ app.use(
     legacyHeaders: false,
   })
 );
+
+// Make sure MongoDB is connected before any API route runs (see config/db.js).
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+    res.status(503);
+    next(new Error('Database unavailable. Please try again shortly.'));
+  }
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, service: 'courierdesk-backend', status: 'ok' });
