@@ -1,10 +1,12 @@
 import type { NextConfig } from "next";
+import { API_BASE } from "./lib/env";
 
 const isDev = process.env.NODE_ENV === "development";
 
+// The browser may only send requests to the backend this build is configured for.
 const apiOrigin = (() => {
   try {
-    return new URL(process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api").origin;
+    return new URL(API_BASE).origin;
   } catch {
     return "";
   }
