@@ -72,16 +72,31 @@ export function getUsers(params: GetUsersParams = {}) {
   return request<Paginated<ApiUser>>(`/users${query ? `?${query}` : ''}`);
 }
 
-export function createUser(data: {
+// Adding a user is two steps: email a 6-digit code to the new user, then verify it.
+export function inviteUser(data: {
   name: string;
   email: string;
   password: string;
   role?: ApiUser['role'];
   company?: string;
 }) {
-  return request<{ data: ApiUser }>('/users', {
+  return request<{ message: string; data: { email: string; expiresInMinutes: number; resendAfterSeconds: number } }>('/users/invite', {
     method: 'POST',
     body: JSON.stringify(data),
+  });
+}
+
+export function resendUserInvite(email: string) {
+  return request<{ message: string; data: { email: string; resendAfterSeconds: number } }>('/users/invite/resend', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function verifyUserInvite(email: string, code: string) {
+  return request<{ data: ApiUser }>('/users/invite/verify', {
+    method: 'POST',
+    body: JSON.stringify({ email, code }),
   });
 }
 

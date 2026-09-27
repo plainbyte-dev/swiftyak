@@ -40,6 +40,7 @@ export interface ApiUser {
   notifications: NotificationPreferences;
   avatarUrl?: string;
   twoFactorEnabled: boolean;
+  emailVerified?: boolean;
 }
 
 export interface VolumeDataPoint {

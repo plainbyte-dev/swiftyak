@@ -89,6 +89,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerifiedAt: {
+      type: Date,
+      default: null,
+    },
     lastLoginAt: {
       type: Date,
       default: null,
@@ -99,6 +107,8 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre('save', async function hashPassword(next) {
   if (!this.isModified('password')) return next();
+  // Accounts created from a verified invite already carry a bcrypt hash.
+  if (this.$locals.passwordHashed) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -126,6 +136,7 @@ userSchema.methods.toSafeObject = function toSafeObject() {
     theme: this.theme,
     avatarUrl: this.avatarUrl,
     twoFactorEnabled: this.twoFactorEnabled,
+    emailVerified: this.emailVerified,
     notifications: this.notifications,
   };
 };
