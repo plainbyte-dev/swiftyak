@@ -12,3 +12,10 @@ export const uploadAvatar = multer({
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 }).single('avatar');
+
+// Logo / stamp / signature for bills — kept small because they're stored in MongoDB.
+export const uploadBillAsset = multer({
+  storage: multer.memoryStorage(),
+  fileFilter,
+  limits: { fileSize: 1024 * 1024 }, // 1MB
+}).single('image');

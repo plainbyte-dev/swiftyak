@@ -1,4 +1,4 @@
-import type { ApiCourier, ApiShipment, DashboardMetrics, ApiUser, Paginated, ApiCompany, ReportPeriod, CourierPerformance, VolumeDataPoint, CompanyPerformance, ReportsSummary, ShipmentSender, ShipmentConsignee, ShipmentFreight } from './types';
+import type { ApiCourier, ApiShipment, DashboardMetrics, ApiUser, Paginated, ApiCompany, ReportPeriod, CourierPerformance, VolumeDataPoint, CompanyPerformance, ReportsSummary, ShipmentSender, ShipmentConsignee, ShipmentFreight, ApiBill, PaymentMode, BillSettings, BillSettingsImage } from './types';
 import type { ShipmentStatus, CourierStatus } from '@/components/ui/StatusBadge';
 
 import { API_BASE } from './env';
@@ -176,7 +176,7 @@ interface RequestOptions extends RequestInit {
   cache?: RequestCache;
 }
 
-const PUBLIC_PATHS = ['/login'];
+const PUBLIC_PATHS = ['/login', '/forgot-password', '/reset-password'];
 
 function handleUnauthorized() {
   window.localStorage.removeItem(TOKEN_KEY);
@@ -234,6 +234,20 @@ export function login(data: { email: string; password: string }) {
   }).then((res) => {
     setToken(res.token);
     return res;
+  });
+}
+
+export function forgotPassword(email: string) {
+  return request<{ success: boolean; message: string }>('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPassword(data: { token: string; password: string }) {
+  return request<{ success: boolean; message: string }>('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify(data),
   });
 }
 
@@ -458,4 +472,94 @@ export function disableTwoFactor(password: string) {
     method: 'POST',
     body: JSON.stringify({ password }),
   });
+}
+
+// ─── PAN Bills ──────────────────────────────────────────────────────────────
+
+export interface GetBillsParams {
+  search?: string;
+  status?: ApiBill['status'] | 'all';
+  from?: string; // YYYY-MM-DD
+  to?: string; // YYYY-MM-DD
+  page?: number;
+  perPage?: number;
+}
+
+export interface BillsResponse extends Paginated<ApiBill> {
+  summary: { issuedCount: number; issuedAmount: number };
+}
+
+export function getBills(params: GetBillsParams = {}) {
+  const query = new URLSearchParams(
+    Object.entries(params).reduce((acc, [k, v]) => {
+      if (v !== undefined && v !== '') acc[k] = String(v);
+      return acc;
+    }, {} as Record<string, string>)
+  ).toString();
+
+  return request<BillsResponse>(`/bills${query ? `?${query}` : ''}`);
+}
+
+export function getBill(id: string) {
+  return request<{ data: ApiBill }>(`/bills/${id}`);
+}
+
+export function createBill(data: {
+  billDate: string;
+  customer: { name: string; pan?: string; address?: string; phone?: string };
+  items: { awb?: string; from?: string; to?: string; description: string; quantity: number; unit?: string; rate: number }[];
+  codCharge?: number;
+  otherCharges?: number;
+  discount?: number;
+  paymentMode: PaymentMode;
+  remarks?: string;
+}) {
+  return request<{ data: ApiBill }>('/bills', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export function cancelBill(id: string, reason: string) {
+  return request<{ data: ApiBill }>(`/bills/${id}/cancel`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reason }),
+  });
+}
+
+export function getBillSettings() {
+  return request<{ data: BillSettings }>('/bills/settings');
+}
+
+export type BillSettingsText = Omit<BillSettings, BillSettingsImage>;
+
+export function updateBillSettings(data: Partial<BillSettingsText>) {
+  return request<{ data: BillSettings }>('/bills/settings', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export function removeBillSettingsImage(kind: BillSettingsImage) {
+  return request<{ data: BillSettings }>(`/bills/settings/${kind}`, { method: 'DELETE' });
+}
+
+export async function uploadBillSettingsImage(kind: BillSettingsImage, file: File) {
+  const token = getToken();
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch(`${API_BASE}/bills/settings/${kind}`, {
+    method: 'PUT',
+    // No Content-Type — the browser sets the multipart boundary.
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+
+  const body = await res.json().catch(() => null);
+  if (!res.ok) {
+    if (res.status === 401) handleUnauthorized();
+    throw new ApiError(res.status, body?.message || `Upload failed with ${res.status}`);
+  }
+  return body as { success: boolean; data: BillSettings };
 }

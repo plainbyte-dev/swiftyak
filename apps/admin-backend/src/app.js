@@ -13,6 +13,7 @@ import userRoutes from './routes/userRoutes.js';
 import reportsRoutes from './routes/reportsRoute.js';
 import bookingRequestRoutes from './routes/bookingRequestRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
+import billRoutes from './routes/billRoutes.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 import dotenv from 'dotenv';
 
@@ -82,6 +83,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/booking-requests', bookingRequestRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/bills', billRoutes);
 app.use(notFound);
 app.use(errorHandler);
 app.use('/uploads', express.static('uploads'));

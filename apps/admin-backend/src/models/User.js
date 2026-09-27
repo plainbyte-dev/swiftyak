@@ -77,6 +77,14 @@ const userSchema = new mongoose.Schema(
       weeklyReport: { type: Boolean, default: false },
       smsAlerts: { type: Boolean, default: false },
     },
+    passwordResetToken: {
+      type: String,
+      select: false, // stored as a SHA-256 hash, never the raw token
+    },
+    passwordResetExpires: {
+      type: Date,
+      select: false,
+    },
     isActive: {
       type: Boolean,
       default: true,

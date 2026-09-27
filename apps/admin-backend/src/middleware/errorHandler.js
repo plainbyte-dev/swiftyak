@@ -22,6 +22,12 @@ export function errorHandler(err, req, res, next) {
       .join(', ');
   }
 
+  // Upload errors (file too large, etc.)
+  if (err.name === 'MulterError' || err.message === 'Only image files are allowed') {
+    statusCode = 400;
+    message = err.code === 'LIMIT_FILE_SIZE' ? 'File is too large' : err.message;
+  }
+
   // Mongo duplicate key
   if (err.code === 11000) {
     statusCode = 409;

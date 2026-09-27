@@ -31,16 +31,18 @@ export default function AppLayout({ children, activePath }: AppLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar
-        collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed((p) => !p)}
-        activePath={activePath}
-      />
+    <div className="flex h-screen overflow-hidden bg-background print:block print:h-auto print:overflow-visible print:bg-white">
+      <div className="contents print:hidden">
+        <Sidebar
+          collapsed={sidebarCollapsed}
+          onToggle={() => setSidebarCollapsed((p) => !p)}
+          activePath={activePath}
+        />
+      </div>
       <main
-        className="flex-1 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out"
+        className="flex-1 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out print:overflow-visible"
       >
-        <div className="min-h-full px-6 py-6 lg:px-8 xl:px-10 2xl:px-12">
+        <div className="min-h-full px-6 py-6 lg:px-8 xl:px-10 2xl:px-12 print:p-0">
           {children}
         </div>
       </main>

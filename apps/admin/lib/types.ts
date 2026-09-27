@@ -186,3 +186,69 @@ export interface ApiCompany {
   createdAt: string;
   updatedAt: string;
 }
+
+// ─── PAN Bills ──────────────────────────────────────────────────────────────
+
+export type PaymentMode = 'cash' | 'bank' | 'wallet' | 'credit';
+
+export interface BillItem {
+  awb: string;
+  from: string;
+  to: string;
+  description: string;
+  quantity: number;
+  unit: string;
+  rate: number;
+  amount: number;
+}
+
+export interface ApiBill {
+  _id: string;
+  billNumber: number;
+  billDate: string;
+  customer: {
+    name: string;
+    pan: string;
+    address: string;
+    phone: string;
+  };
+  /** Seller details as they were when the bill was issued. Missing on very old bills. */
+  seller?: { name: string; shortName?: string; address: string; phone: string; email: string; pan: string };
+  items: BillItem[];
+  /** "Delivery charges" — sum of the item amounts */
+  subtotal: number;
+  codCharge: number;
+  otherCharges: number;
+  discount: number;
+  /** Net amount payable */
+  total: number;
+  paymentMode: PaymentMode;
+  remarks: string;
+  status: 'issued' | 'cancelled';
+  cancelReason: string;
+  cancelledAt: string | null;
+  createdBy?: { _id: string; name: string } | string;
+  createdAt: string;
+}
+
+export interface BillSettings {
+  businessName: string;
+  /** Used on the stamp and "For … Authorised Signatory", e.g. "Swift Yak Pvt. Ltd." */
+  shortName: string;
+  address: string;
+  phone: string;
+  email: string;
+  website: string;
+  pan: string;
+  signatoryName: string;
+  signatoryTitle: string;
+  footerNote: string;
+  /** Small print bottom-left, e.g. printing press details */
+  printerNote: string;
+  /** data: URLs, or '' when not uploaded */
+  logo: string;
+  stamp: string;
+  signature: string;
+}
+
+export type BillSettingsImage = 'logo' | 'stamp' | 'signature';

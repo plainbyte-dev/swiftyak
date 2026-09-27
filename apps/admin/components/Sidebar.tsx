@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AppLogo from '@/components/ui/AppLogo';
-import { LayoutDashboard, Package, Truck, Building2, Users, MapPin, BarChart3, Settings, ChevronLeft, ChevronRight, LogOut, Search } from 'lucide-react';
+import { LayoutDashboard, Package, Truck, Building2, Users, MapPin, BarChart3, Settings, Receipt, ChevronLeft, ChevronRight, LogOut, Search } from 'lucide-react';
 import { getMe, logout, getShipments } from '@/lib/api';
 import { ApiUser } from '@/lib/types';
 
@@ -29,6 +29,7 @@ const NAV_GROUPS = [
     items: [
       { label: 'Companies', icon: Building2, href: '/companies', badgeKey: null },
       { label: 'Users', icon: Users, href: '/users', badgeKey: null },
+      { label: 'PAN Bills', icon: Receipt, href: '/bills', badgeKey: null },
       { label: 'Reports', icon: BarChart3, href: '/reports', badgeKey: null },
     ],
   },

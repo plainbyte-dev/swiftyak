@@ -1,9 +1,13 @@
+import crypto from 'crypto';
 import asyncHandler from 'express-async-handler';
 import { authenticator } from 'otplib';
 import qrcode from 'qrcode';
 import User from '../models/User.js';
 import { generateToken } from '../utils/generateToken.js';
 import { uploadBufferToCloudinary } from '../utils/cloudinary.js';
+import { sendPasswordResetEmail } from '../utils/mailer.js';
+
+const hashResetToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
 
 // @desc    Log in and receive a JWT
 // @route   POST /api/auth/login
@@ -106,7 +110,87 @@ export const changePassword = asyncHandler(async (req, res) => {
  
   res.json({ success: true, message: 'Password updated' });
 });
- 
+
+// @desc    Email a password reset link
+// @route   POST /api/auth/forgot-password
+// @access  Public
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || typeof email !== 'string') {
+    res.status(400);
+    throw new Error('Email is required');
+  }
+
+  // Same response whether or not the account exists, so this endpoint
+  // can't be used to discover which emails are registered.
+  const genericResponse = {
+    success: true,
+    message: 'If an account exists for that email, a password reset link has been sent.',
+  };
+
+  const user = await User.findOne({ email: email.toLowerCase().trim() });
+  if (!user || !user.isActive) {
+    return res.json(genericResponse);
+  }
+
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const expiresMinutes = Number(process.env.RESET_TOKEN_EXPIRES_MINUTES) || 60;
+
+  user.passwordResetToken = hashResetToken(resetToken);
+  user.passwordResetExpires = new Date(Date.now() + expiresMinutes * 60 * 1000);
+  await user.save({ validateBeforeSave: false });
+
+  const baseUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
+
+  try {
+    await sendPasswordResetEmail(user, resetUrl);
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    console.error('Failed to send password reset email:', err.message);
+    res.status(500);
+    throw new Error('Could not send reset email. Please try again later.');
+  }
+
+  res.json(genericResponse);
+});
+
+// @desc    Set a new password using a reset token
+// @route   POST /api/auth/reset-password
+// @access  Public
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, password } = req.body;
+
+  if (!token || !password) {
+    res.status(400);
+    throw new Error('token and password are required');
+  }
+  if (typeof password !== 'string' || password.length < 8) {
+    res.status(400);
+    throw new Error('Password must be at least 8 characters');
+  }
+
+  const user = await User.findOne({
+    passwordResetToken: hashResetToken(String(token)),
+    passwordResetExpires: { $gt: new Date() },
+  }).select('+passwordResetToken +passwordResetExpires');
+
+  if (!user) {
+    res.status(400);
+    throw new Error('Reset link is invalid or has expired');
+  }
+
+  user.password = password; // pre('save') hook re-hashes this
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  res.json({ success: true, message: 'Password has been reset. You can now log in.' });
+});
+
 export const uploadAvatarHandler = asyncHandler(async (req, res) => {
   if (!req.file) {
     res.status(400);
