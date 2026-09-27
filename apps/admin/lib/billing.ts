@@ -99,7 +99,7 @@ export function amountInWords(amount: number) {
 
 // ─── Excel exports ──────────────────────────────────────────────────────────
 
-function triggerDownload(buffer: ArrayBuffer, filename: string) {
+export function triggerDownload(buffer: ArrayBuffer, filename: string) {
   const blob = new Blob([buffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   });
@@ -113,11 +113,11 @@ function triggerDownload(buffer: ArrayBuffer, filename: string) {
   URL.revokeObjectURL(url);
 }
 
-const MONEY_FMT = '#,##0.00';
-const NAVY_ARGB = 'FF1B2A4A';
-const ORANGE_ARGB = 'FFE8590C';
-const thin = { style: 'thin' as const };
-const BORDER = { top: thin, left: thin, bottom: thin, right: thin };
+export const MONEY_FMT = '#,##0.00';
+export const NAVY_ARGB = 'FF1B2A4A';
+export const ORANGE_ARGB = 'FFE8590C';
+export const thin = { style: 'thin' as const };
+export const BORDER = { top: thin, left: thin, bottom: thin, right: thin };
 
 function sellerOf(bill: ApiBill, settings: BillSettings) {
   return bill.seller?.name
@@ -125,7 +125,7 @@ function sellerOf(bill: ApiBill, settings: BillSettings) {
     : { name: settings.businessName, shortName: settings.shortName, address: settings.address, phone: settings.phone, email: settings.email, pan: settings.pan };
 }
 
-async function addImage(workbook: ExcelJS.Workbook, src: string, knockOutWhite = false) {
+export async function addImage(workbook: ExcelJS.Workbook, src: string, knockOutWhite = false) {
   // Excel only embeds PNG/JPEG/GIF, so normalise everything (e.g. the SVG stamp) to PNG.
   const png = src.startsWith('data:image/png') && !knockOutWhite ? src : await toPngDataUrl(src, 400, knockOutWhite);
   return workbook.addImage({ base64: png, extension: 'png' });

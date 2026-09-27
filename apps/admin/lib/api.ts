@@ -1,4 +1,4 @@
-import type { ApiCourier, ApiShipment, DashboardMetrics, ApiUser, Paginated, ApiCompany, ReportPeriod, CourierPerformance, VolumeDataPoint, CompanyPerformance, ReportsSummary, ShipmentSender, ShipmentConsignee, ShipmentFreight, ApiBill, PaymentMode, BillSettings, BillSettingsImage } from './types';
+import type { ApiCourier, ApiShipment, DashboardMetrics, ApiUser, Paginated, ApiCompany, ReportPeriod, CourierPerformance, VolumeDataPoint, CompanyPerformance, ReportsSummary, ShipmentSender, ShipmentConsignee, ShipmentFreight, ApiBill, PaymentMode, BillSettings, BillSettingsImage, ApiVoucher } from './types';
 import type { ShipmentStatus, CourierStatus } from '@/components/ui/StatusBadge';
 
 import { API_BASE } from './env';
@@ -124,7 +124,6 @@ export function getCompany(id: string) {
 
 export function createCompany(data: {
   name: string;
-  contact: string;
   email: string;
   phone?: string;
   address?: string;
@@ -139,7 +138,6 @@ export function createCompany(data: {
 
 export function updateCompany(id: string, data: Partial<{
   name: string;
-  contact: string;
   email: string;
   phone: string;
   address: string;
@@ -562,4 +560,61 @@ export async function uploadBillSettingsImage(kind: BillSettingsImage, file: Fil
     throw new ApiError(res.status, body?.message || `Upload failed with ${res.status}`);
   }
   return body as { success: boolean; data: BillSettings };
+}
+
+// ─── Payment Vouchers ───────────────────────────────────────────────────────
+
+export interface GetVouchersParams {
+  search?: string;
+  company?: string;
+  status?: ApiVoucher['status'] | 'all';
+  from?: string; // YYYY-MM-DD
+  to?: string; // YYYY-MM-DD
+  page?: number;
+  perPage?: number;
+}
+
+export interface VouchersResponse extends Paginated<ApiVoucher> {
+  summary: { issuedCount: number; issuedAmount: number };
+}
+
+export function getVouchers(params: GetVouchersParams = {}) {
+  const query = new URLSearchParams(
+    Object.entries(params).reduce((acc, [k, v]) => {
+      if (v !== undefined && v !== '') acc[k] = String(v);
+      return acc;
+    }, {} as Record<string, string>)
+  ).toString();
+
+  return request<VouchersResponse>(`/vouchers${query ? `?${query}` : ''}`);
+}
+
+export function getVoucher(id: string) {
+  return request<{ data: ApiVoucher }>(`/vouchers/${id}`);
+}
+
+export function createVoucher(data: {
+  company: string;
+  voucherDate: string;
+  payee: { pan?: string; address?: string; phone?: string };
+  items: { awb?: string; from?: string; to?: string; description: string; quantity: number; unit?: string; rate: number }[];
+  otherCharges?: number;
+  discount?: number;
+  paymentMode: PaymentMode;
+  paymentRef?: string;
+  supplierBillNo?: string;
+  againstBillNo?: number;
+  remarks?: string;
+}) {
+  return request<{ data: ApiVoucher }>('/vouchers', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export function cancelVoucher(id: string, reason: string) {
+  return request<{ data: ApiVoucher }>(`/vouchers/${id}/cancel`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reason }),
+  });
 }

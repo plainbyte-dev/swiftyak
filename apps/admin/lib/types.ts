@@ -177,7 +177,6 @@ export interface Paginated<T> {
 export interface ApiCompany {
   _id: string;
   name: string;
-  contact: string;
   email: string;
   phone?: string;
   address?: string;
@@ -252,3 +251,37 @@ export interface BillSettings {
 }
 
 export type BillSettingsImage = 'logo' | 'stamp' | 'signature';
+
+// ─── Payment Vouchers ───────────────────────────────────────────────────────
+
+/** Money paid to a partner courier company — the expense side of a customer bill. */
+export interface ApiVoucher {
+  _id: string;
+  voucherNumber: number;
+  voucherDate: string;
+  company?: string;
+  payee: {
+    name: string;
+    pan: string;
+    address: string;
+    phone: string;
+  };
+  seller?: { name: string; shortName?: string; address: string; phone: string; email: string; pan: string };
+  items: BillItem[];
+  /** Service charges — sum of the item amounts */
+  subtotal: number;
+  otherCharges: number;
+  discount: number;
+  /** Net amount paid */
+  total: number;
+  paymentMode: PaymentMode;
+  paymentRef: string;
+  supplierBillNo: string;
+  againstBillNo: number | null;
+  remarks: string;
+  status: 'issued' | 'cancelled';
+  cancelReason: string;
+  cancelledAt: string | null;
+  createdBy?: { _id: string; name: string } | string;
+  createdAt: string;
+}
