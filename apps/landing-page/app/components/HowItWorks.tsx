@@ -99,9 +99,23 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="py-20 sm:py-28 overflow-hidden"
+      className="relative isolate py-20 sm:py-28 overflow-hidden"
       style={{ backgroundColor: NEAR_BLACK }}
     >
+      {/* Background photo with a dark shade on top so the steps stay readable */}
+      <div
+        className="absolute inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: "url('/assets/images/how-it-works-bg.webp')" }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: `linear-gradient(180deg, ${NEAR_BLACK} 0%, rgba(13,17,23,0.78) 18%, rgba(13,17,23,0.7) 50%, rgba(13,17,23,0.78) 82%, ${NEAR_BLACK} 100%)`,
+        }}
+        aria-hidden="true"
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -114,7 +128,7 @@ export default function HowItWorks() {
           <h2 className="text-section-title font-extrabold text-white tracking-tight">
             How It <span style={{ color: GOLD }}>Works</span>
           </h2>
-          <p className="text-white/50 text-base mt-4 max-w-xl mx-auto leading-relaxed">
+          <p className="text-white/75 text-base mt-4 max-w-xl mx-auto leading-relaxed">
             From quote to delivery in 6 seamless steps. Transparent, trackable, and reliable every time.
           </p>
         </div>
@@ -122,7 +136,7 @@ export default function HowItWorks() {
         {/* Steps */}
         <div ref={sectionRef} className="relative">
           {/* Desktop progress line */}
-          <div className="hidden lg:block absolute top-10 left-0 right-0 h-0.5 bg-white/10 mx-16 overflow-visible">
+          <div className="hidden lg:block absolute top-10 left-0 right-0 h-0.5 bg-white/20 mx-16 overflow-visible">
             <div
               className="relative h-full transition-all duration-[1500ms] ease-out"
               style={{ width: isVisible ? '100%' : '0%', backgroundColor: GOLD }}
@@ -169,7 +183,7 @@ export default function HowItWorks() {
 
                 <div>
                   <h3 className="font-bold text-white text-sm mb-1.5">{step.title}</h3>
-                  <p className="text-white/50 text-xs leading-relaxed">{step.description}</p>
+                  <p className="text-white/75 text-xs leading-relaxed">{step.description}</p>
                 </div>
               </div>
             ))}
