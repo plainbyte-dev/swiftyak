@@ -156,7 +156,7 @@ export default function HowItWorks() {
                   className="relative w-20 h-20 rounded-full flex items-center justify-center z-10 ring-4 ring-white"
                   style={{
                     background: `linear-gradient(145deg, ${NAVY} 0%, #0F1D63 100%)`,
-                    color: GOLD,
+                    color: '#FFFFFF',
                     boxShadow: '0 10px 24px -8px rgba(23, 42, 138, 0.45)',
                   }}
                 >

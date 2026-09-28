@@ -107,14 +107,16 @@ export default function WhySwiftYak() {
       {/* Background photo with a dark shade on top so the text stays readable */}
       <div
         className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: "url('/assets/images/how-it-works-bg.webp')" }}
+        style={{ backgroundImage: "url('/assets/images/why-swiftyak-bg.webp')" }}
         aria-hidden="true"
       />
       <div
         className="absolute inset-0 -z-10"
         style={{
-          background:
-            'linear-gradient(180deg, rgba(13,17,23,0.85) 0%, rgba(13,17,23,0.7) 30%, rgba(13,17,23,0.7) 70%, rgba(13,17,23,0.85) 100%)',
+          background: [
+            'linear-gradient(180deg, rgba(13,17,23,0.6) 0%, rgba(13,17,23,0) 22%, rgba(13,17,23,0) 78%, rgba(13,17,23,0.6) 100%)',
+            'linear-gradient(90deg, rgba(13,17,23,0.86) 0%, rgba(13,17,23,0.74) 50%, rgba(13,17,23,0.58) 100%)',
+          ].join(', '),
         }}
         aria-hidden="true"
       />
