@@ -6,7 +6,6 @@ import Icon from '@/components/ui/AppIcon';
 const INDUSTRIES = [
   { name: 'Garments & Textiles', icon: 'ScissorsIcon', color: 'bg-blue-50 text-blue-700' },
   { name: 'Handicrafts', icon: 'SparklesIcon', color: 'bg-amber-50 text-amber-700' },
-  { name: 'Medical & Pharma', icon: 'HeartIcon', color: 'bg-red-50 text-red-700' },
   { name: 'Electronics', icon: 'CpuChipIcon', color: 'bg-purple-50 text-purple-700' },
   { name: 'Furniture', icon: 'HomeIcon', color: 'bg-green-50 text-green-700' },
   { name: 'Automotive', icon: 'WrenchScrewdriverIcon', color: 'bg-slate-50 text-slate-700' },
