@@ -99,23 +99,9 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative isolate py-20 sm:py-28 overflow-hidden"
-      style={{ backgroundColor: NEAR_BLACK }}
+      className="py-20 sm:py-28 overflow-hidden"
+      style={{ backgroundColor: '#FFFFFF' }}
     >
-      {/* Background photo with a dark shade on top so the steps stay readable */}
-      <div
-        className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: "url('/assets/images/how-it-works-bg.webp')" }}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          background: `linear-gradient(180deg, ${NEAR_BLACK} 0%, rgba(13,17,23,0.78) 18%, rgba(13,17,23,0.7) 50%, rgba(13,17,23,0.78) 82%, ${NEAR_BLACK} 100%)`,
-        }}
-        aria-hidden="true"
-      />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
@@ -125,10 +111,10 @@ export default function HowItWorks() {
           >
             Simple Process
           </span>
-          <h2 className="text-section-title font-extrabold text-white tracking-tight">
-            How It <span style={{ color: GOLD }}>Works</span>
+          <h2 className="text-section-title font-extrabold tracking-tight" style={{ color: NEAR_BLACK }}>
+            How It <span style={{ color: NAVY }}>Works</span>
           </h2>
-          <p className="text-white/75 text-base mt-4 max-w-xl mx-auto leading-relaxed">
+          <p className="text-[#6B7280] text-base mt-4 max-w-xl mx-auto leading-relaxed">
             From quote to delivery in 6 seamless steps. Transparent, trackable, and reliable every time.
           </p>
         </div>
@@ -136,7 +122,7 @@ export default function HowItWorks() {
         {/* Steps */}
         <div ref={sectionRef} className="relative">
           {/* Desktop progress line */}
-          <div className="hidden lg:block absolute top-10 left-0 right-0 h-0.5 bg-white/20 mx-16 overflow-visible">
+          <div className="hidden lg:block absolute top-10 left-0 right-0 h-0.5 bg-[#E2E6F0] mx-16 overflow-visible">
             <div
               className="relative h-full transition-all duration-[1500ms] ease-out"
               style={{ width: isVisible ? '100%' : '0%', backgroundColor: GOLD }}
@@ -167,23 +153,27 @@ export default function HowItWorks() {
               >
                 {/* Icon circle */}
                 <div
-                  className="relative w-20 h-20 rounded-full flex items-center justify-center border-2 shadow-lg z-10"
-                  style={{ backgroundColor: GOLD, borderColor: GOLD, color: NAVY }}
+                  className="relative w-20 h-20 rounded-full flex items-center justify-center z-10 ring-4 ring-white"
+                  style={{
+                    background: `linear-gradient(145deg, ${NAVY} 0%, #0F1D63 100%)`,
+                    color: GOLD,
+                    boxShadow: '0 10px 24px -8px rgba(23, 42, 138, 0.45)',
+                  }}
                 >
                   <SpeedLines active={isVisible} />
                   <Icon name={step.icon as never} size={26} />
                   {/* Step number */}
                   <span
-                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center text-white"
-                    style={{ backgroundColor: NAVY }}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center ring-2 ring-white"
+                    style={{ backgroundColor: GOLD, color: NAVY }}
                   >
                     {step.number}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-white text-sm mb-1.5">{step.title}</h3>
-                  <p className="text-white/75 text-xs leading-relaxed">{step.description}</p>
+                  <h3 className="font-bold text-sm mb-1.5" style={{ color: NEAR_BLACK }}>{step.title}</h3>
+                  <p className="text-[#6B7280] text-xs leading-relaxed">{step.description}</p>
                 </div>
               </div>
             ))}
