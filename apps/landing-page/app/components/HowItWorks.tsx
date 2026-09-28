@@ -178,6 +178,7 @@ export default function HowItWorks() {
 
         {/* CTA */}
         <div className="text-center mt-14">
+          {/* TEMPORARILY HIDDEN: tracking & booking (restore by uncommenting)
           <a
             href="/get-quote"
             className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl text-base"
@@ -189,6 +190,7 @@ export default function HowItWorks() {
             <Icon name="RocketLaunchIcon" size={18} />
             Start Your Shipment
           </a>
+          */}
         </div>
       </div>
     </section>

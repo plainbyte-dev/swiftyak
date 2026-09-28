@@ -22,8 +22,9 @@ const footerLinks = [
   {
     group: 'Resources',
     links: [
-      { label: 'Track Shipment', href: '/tracking' },
-      { label: 'Get a Quote', href: '/get-quote' },
+      // TEMPORARILY HIDDEN: tracking & booking (restore by uncommenting)
+      // { label: 'Track Shipment', href: '/tracking' },
+      // { label: 'Get a Quote', href: '/get-quote' },
       { label: 'FAQs', href: '/#faq' },
       { label: 'Contact', href: '/#contact' },
     ],

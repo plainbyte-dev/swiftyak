@@ -452,6 +452,7 @@ export default function HeroSection() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 mb-14">
+            {/* TEMPORARILY HIDDEN: tracking & booking (restore by uncommenting)
             <Link
               href="/tracking"
               className="inline-flex items-center justify-center gap-2.5 bg-white font-bold px-8 py-4 rounded-xl hover:bg-white/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl text-base"
@@ -471,6 +472,7 @@ export default function HeroSection() {
               <Icon name="CalculatorIcon" size={18} />
               Get a Quote
             </Link>
+            */}
           </div>
 
           {/* Trust indicators, swap with mode */}
